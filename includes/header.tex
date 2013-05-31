@@ -1,0 +1,28 @@
+\documentclass[12pt]{memoir}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{tabularx}
+\usepackage{colortbl}
+
+\usepackage{url}
+
+\usepackage{titlesec, blindtext, color}
+\definecolor{gray75}{gray}{0.75}
+\newcommand{\hsp}{\hspace{20pt}}
+\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp\textcolor{gray75}{|}\hsp}{0pt}{\Huge\bfseries}
+
+% fuer listings etc
+\usepackage{listings}
+\definecolor{hellgrau}{gray}{.85}
+\lstset{
+% backgroundcolor=\color{hellgrau},
+xleftmargin=0.4cm,
+framexleftmargin=0.4cm,
+framextopmargin=20pt,
+rulesep=20pt,
+framesep=20pt,
+basicstyle=\ttfamily\fontsize{8}{10}\selectfont
+}
