@@ -1,0 +1,12 @@
+<package name="Uplink-Port-Monitoring">
+  <filter>IPADDR != '0.0.0.0'</filter>
+  <include-range begin="1.1.1.1" end="255.255.255.254" />
+  <interface name="important_ports" 
+             criteria="snmpifalias like 'Uplink%'" 
+             interval="300000"
+             timeout="3000"
+             retry="3"
+             max-vars-per-pdu="10"
+             user-defined="false" 
+             status="on"/>
+</package>

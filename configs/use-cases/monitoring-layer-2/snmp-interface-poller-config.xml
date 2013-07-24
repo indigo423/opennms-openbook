@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?castor class-name= \
+    "org.opennms.netmgt.snmpinterfacepoller.SnmpInterfacePollerConfiguration"?>
+<snmp-interface-poller-configuration threads="30" service="SNMP">
+  <node-outage>
+    <critical-service name="ICMP" />
+    <critical-service name="SNMP" />
+  </node-outage>
+<!-- DEACTIVATE OPENNMS DEFAULT AND KEEP IT UNTOUCHED FOR EASIER UPGRADE
+  <package name="example1">
+    <filter>IPADDR != '0.0.0.0'</filter>
+    <include-range begin="1.1.1.1" end="1.1.1.1" />
+    <interface name="Ethernet" criteria="snmpiftype = 6" \
+      interval="300000" user-defined="false" status="on"/>
+  </package>
+-->
+  .
+  .
+  .
+  <!-- ######################################################## -->
+  <!-- ###### START ###### - Customized Layer-2 port monitoring -->
+  <!-- ######################################################## -->
+
+  <package name="Uplink-Port-Monitoring">
+    <filter>IPADDR != '0.0.0.0'</filter>
+    <include-range begin="1.1.1.1" end="255.255.255.254"/>
+    <interface name="important_ports" \
+      criteria="snmpifalias like 'Uplink%'" interval="10000" \
+      timeout="3000" retry="3" max-vars-per-pdu="10" \
+      user-defined="false" status="on"/>
+  </package>
+
+  <!-- ######################################################## -->
+  <!-- ###### E N D ###### - Customized Layer-2 port monitoring -->
+  <!-- ######################################################## -->
+</snmp-interface-poller-configuration>
