@@ -50,48 +50,65 @@ Damit sind die Voraussetzungen für das Monitoring in OpenNMS erfüllt und wir k
 \subsection{Cisco Switch Provisioning}
 %=======================================================
 Bevor wir Geräte eintragen, sollte die verwendete \textit{SNMP-Community} bekannt sein. Hierzu gibt es zwei Möglichkeiten, entweder die \textit{default SNMP-Community} ist in der Datei
+
 \begin{lstlisting}[numbers=none]
 $OPENNMS_HOME/etc/snmp-config.xml
 \end{lstlisting}
+
 entsprechend setzen oder die \textit{Community} wird für die einzelne IP-Adresse oder einen IP-Bereich über die Web-Oberfläche gesetzt. Um die \textit{SNMP-Community} für unseren Switch mit der IP 172.16.23.9 zu setzen, wird das Formular in der Web-Oberfläche wie folgt ausgefüllt.
+
 \begin{lstlisting}[numbers=none]
 Admin --> Configure SNMP Community Names by IP
 \end{lstlisting}
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/configure-snmp-by-ip}
 	\caption{SNMP Community für IP-Adressen konfigurieren}
 	\label{pic:configure-snmp-by-ip}
 \end{figure}
+
 Im nächsten Schritt wird der Switch über das \textit{Provisioning} von \textit{OpenNMS} aufgenommen. Wir erzeugen eine neue \textit{Requisition Group} über 
+
 \begin{lstlisting}[numbers=none]
 Admin --> Manage Provisioning Groups --> Add New Group
 \end{lstlisting}
-mit der Bezeichnung \textit{OpenNMS Lab}. Wir erstellen eine \textit{Policy}\footnote{\textit{Policies} beschreiben Richtlinien für das Monitoring in \textit{OpenNMS} und werden während des Import in die \textit{OpenNMS-Datenbank} angewendet.} die nur Leistungsdaten von relevanten und aktiven Ports aufzeichnet. Zusätzlich soll nur \textit{ICMP} und \textit{SNMP} für den Switch überwacht werden. Die \textit{Policy} sieht dazu wie folgt aus:\begin{figure}[H]
+
+mit der Bezeichnung \textit{OpenNMS Lab}. Wir erstellen eine \textit{Policy}\footnote{\textit{Policies} beschreiben Richtlinien für das Monitoring in \textit{OpenNMS} und werden während des Import in die \textit{OpenNMS-Datenbank} angewendet.} die nur Leistungsdaten von relevanten und aktiven Ports aufzeichnet. Zusätzlich soll nur \textit{ICMP} und \textit{SNMP} für den Switch überwacht werden. Die \textit{Policy} sieht dazu wie folgt aus:
+
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/requisition-policy}
 	\caption{Richtlinie für den Import des \textit{Cisco} Switch}
 	\label{pic:requisition-policy}
 \end{figure}
+
 Alle Detektoren ausser \textit{ICMP} und \textit{SNMP} wurden entfernt. Zusätzlich wurde eine \textit{datacollection\_policy} angelegt, die nur Leistungsdaten von Ports aufzeichnet, welche aktiv sind und\footnote{Die Verknüpfung stammt aus dem Konfigurationsschlüssel \textit{matchBehavior}, \textit{oder=ANY\_PARAMETER}, \textit{Negation=NON\_PARAMETERS}} eine Port-Beschreibung\footnote{In der \textit{SNMP MIB II} ist \textit{ifDescr} die Interface-Bezeichnung \textit{(FastEthernet 0/1)} und der \textit{ifAlias} die Port Beschreibung} mit \textit{Uplink} beginnend besitzen. Die Geräte in der \textit{Requisition Group} wird täglich\footnote{Definiert über den Standardparameter \textit{Scan Interval 1d}} einmal synchronisiert. Der Switch wird nun unter 
+
 \begin{lstlisting}[numbers=none]
 Requisition (Provisioning Group): EDIT --> Add Node
 \end{lstlisting}
+
 eingetragen und synchronisiert.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/requisition-import}
 	\caption{Import der \textit{Requisition Group} in \textit{OpenNMS}}
 	\label{pic:requisition-import}
 \end{figure}
+
 Die Konfiguration wird bestätigt, über die Schaltfläche \textit{Synchronize} importiert und im Monitoring bereitgestellt. Nach dem Import stellt sich der Switch in OpenNMS wie folgt dar:
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/node-page}
 	\caption{\textit{Node Page} des Cisco-Switch nach dem Import in \textit{OpenNMS}}
 	\label{pic:node-page}
 \end{figure}
+
 Zur besseren Darstellung wurden die Spalten mit der Interface-Geschwindigkeit und IP-Adresse ausgeblendet und der \textit{Port-Status} hinzugefügt. Die grün hinterlegten Ports sind aktiv. Die blau hinterlegten Ports sind administrativ deaktiviert. Der Switch wird nun täglich  mit den entsprechenden Port-Beschreibungen in OpenNMS synchronisiert und die entsprechenden Informationen im Monitoring bereitgestellt. Es werden zusätzlich nur Leistungsdaten von Ports mit der Beschreibung \textit{Uplink} aufgezeichnet.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/uplink-datacollection}
@@ -103,21 +120,29 @@ Zur besseren Darstellung wurden die Spalten mit der Interface-Geschwindigkeit un
 \subsection{Port Status kontrollieren}
 %=======================================================
 Zu Begin muss der dazu verwendete \textit{SNMP Interface Poller} aktiviert werden. In der Datei
+
 \begin{lstlisting}[numbers=none]
 $OPENNMS_HOME/etc/service-configuration.xml
 \end{lstlisting}
+
 wird dazu der entsprechende Dienst auskommentiert.
+
 \lstinputlisting[language=XML, caption={Der \textit{SNMP Interface Poller} ist nach der Installation von \textit{OpenNMS} einkommentiert.}
        \label{lst:opennms-service-ifpoller}]
   {configs/use-cases/monitoring-layer-2/opennms-service-config.xml}
+
 Im nächsten Schritt wird ein \emph{Interface Polling Package} angelegt. In diesem wird festgelegt, welche Ports zu überwachen sind.
+
 \begin{lstlisting}[numbers=none]
 vi $OPENNMS_HOME/etc/snmp-interface-poller-configuration.xml
 \end{lstlisting}
+
 Die package-Beschreibung wird wie folgt aufgebaut:
+
 \lstinputlisting[language=XML, caption={\textit{Polling-Package} für den \textit{SNMP-Interface Poller}}
        \label{lst:opennms-ifpoller-package}]
   {configs/use-cases/monitoring-layer-2/snmp-interface-poller-package-config.xml}
+
 Damit nur Ports mit der Beschreibung \textit{Uplink} überwacht werden, wird ein Filterkritierum angegeben. Dieses lässt sich logisch mit weiteren Kriterien mit \textit{AND} und \textit{OR} verknüpfen. Mit \textit{snmpifalias like 'Uplink\%'} wird der entsprechende \textit{Alias} aus der Datenbank ausgelesen und überwacht. Der Port Status wird alle 5 Minuten getestet und aktualisiert. Es können als Bedingung alle Felder aus der Tabelle \textit{snmpinterface} verwendet werden. In der Version 1.8.1 sind folgende Spalten verwendbar:
 
 \pagebreak
@@ -177,14 +202,20 @@ Die vollständige Konfigurationsdatei wird im folgenden komplett dargestellt.
        \label{lst:opennms-ifpoller-configuration}]
   {configs/use-cases/monitoring-layer-2/snmp-interface-poller-config.xml}
 
-Damit die Einstellung wirksam werden, muss OpenNMS neu gestartet werden.\begin{lstlisting}[numbers=none]service opennms restart
+Damit die Einstellung wirksam werden, muss OpenNMS neu gestartet werden.
+
+\begin{lstlisting}[numbers=none]service opennms restart
 \end{lstlisting}
 
 %=======================================================
 \subsection{Funktionstest}
 %=======================================================
 Im nächsten Schritt prüfen wir das Verhalten von OpenNMS wenn verschiedene Ports den Status ändern. Dazu werden zwei Testszenarien geprüft:
-\begin{enumerate}\item{Ein Uplink Port und der Workstation Port werden abgezogen und ein Ausfall simuliert. Es sollte nur ein Port Down Event auf dem Uplink Port erzeugt werden.}\item{Ein Uplink Port und der Workstation Port werden administrativ down gesetzt. Zusätzlich simulieren wir eine echte Störung auf dem Uplink zum ISP-Router.}\end{enumerate}In der Ausgangssituation läuft alles wie gewünscht. Alle Ports sind aktiv und funktionsbereit.
+
+\begin{enumerate}  \item{Ein Uplink Port und der Workstation Port werden abgezogen und ein Ausfall simuliert. Es sollte nur ein Port Down Event auf dem Uplink Port erzeugt werden.}  \item{Ein Uplink Port und der Workstation Port werden administrativ down gesetzt. Zusätzlich simulieren wir eine echte Störung auf dem Uplink zum ISP-Router.}\end{enumerate}
+
+In der Ausgangssituation läuft alles wie gewünscht. Alle Ports sind aktiv und funktionsbereit.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/node-page-snmpifpoller}
@@ -196,47 +227,59 @@ Im nächsten Schritt prüfen wir das Verhalten von OpenNMS wenn verschiedene Por
 \subsubsection{Szenario 1: Port Störungen}
 %=======================================================
 Die Ports \emph{Fa0/3} und \emph{Fa0/4} wurden abgezogen und simulieren einen Ausfall. Wir sehen, dass der Portstatus nur für den Port \emph{Fa0/3} aktualisiert wurde.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/port-outage}
 	\caption{Anzeige Port Störung eines \emph{Physical Interfaces}.}
 	\label{pic:port-outage-snmpifpoller}
 \end{figure}
+
 OpenNMS erzeugt zusätzlich ein entsprechendes Event und protokolliert damit das Ereignis.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/port-down-event}
 	\caption{\emph{Event} bei Port-Störung.}
 	\label{pic:port-down-event}
 \end{figure}
+
 Der Status des Ports \emph{Fa0/4} wird nicht durch den \emph{SNMP-Interface Poller} aktualisiert. Es wurde ja explizit angegeben, dass nur \emph{Uplink} Ports überwacht werden. Erst bei einer neuen Synchronisation der kompletten \emph{Provisioning Group} wird auch der entsprechende Port-Status der Workstation wieder mit übernommen. Das Interval beträgt einen Tag. Wir synchronisieren manuell und der entsprechende Port Status wird wie folgt angzeigt.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/port-up-event}
 	\caption{\emph{Event} beim auflösen der Port-Störung.}
 	\label{pic:port-up-event}
 \end{figure}
+
 Damit ist der erste Testfall erfolgreich abgeschlossen. Im zweiten Testfall prüfen wir, ob der Administrative Status korrekt überwacht wird.
 
 %=======================================================
 \subsubsection{Szenario 2: Störung und administrativ deaktiviert}
 %=======================================================
 Wir gehen wie gehabt von einem voll funktionsfähigem Netzwerk aus. Alle Ports sind aktiv und funktionsbereit. Es werden nun wiederum zwei Ports manuell deaktiviert8. Der Status sieht nun wie folgt aus.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/port-admin-down}
 	\caption{Interface status nach administrativen deaktivieren des Ports.}
 	\label{pic:port-admin-down}
 \end{figure}
+
 Wir erhalten zwei unterschiedliche Meldungen und zwar über den Port \emph{Fa0/1} sowie \emph{Fa0/3}. Der Port \emph{Fa0/4} für die Workstation wird komplett ignoriert. Für den administrativen Status wird ein eigenes Event \emph{interfaceAdminDown} erzeugt.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/port-admin-down-event}
 	\caption{\emph{Event} nach dem administrativen deaktivieren des Ports.}
 	\label{pic:port-admin-down-event}
 \end{figure}
+
 Bei einer echten Störung wird ein Event \emph{interfaceOperDown} generiert. Damit ist der Funktionstest abgeschlossen und auf die entsprechenden Events können verschiedene Benachrichtigungen eingerichtet werden. Für die Benachrichtigung stehen die folgenden Events zur Verfügung
+
 \begin{itemize}
   \item{Snmp Interface Admin Status Down}  \item{Snmp Interface Admin Status Up}  \item{Snmp Interface Oper Status Down}  \item{Snmp Interface Oper Status Up}
 \end{itemize}
-Damit sollte einer Port Status Überwachung in OpenNMS nichts mehr im Wege stehen. 
+
+Damit sollte einer Port Status Überwachung in OpenNMS nichts mehr im Wege stehen.
