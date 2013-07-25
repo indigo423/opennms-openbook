@@ -5,8 +5,29 @@
 \parindent 0pt
 \parskip 11pt
 
+\include{content/titlepage}
+
+\tableofcontents
+\addcontentsline{toc}{section}{Inhaltsverzeichnis} 
+\newpage
+
+\printnomenclature
+\addcontentsline{toc}{chapter}{Abkürzungsverzeichnis}
+\newpage
+
+\listoffigures
+\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+\newpage
+
+\listoftables
+\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
+\newpage
+
 \chapter{Anwendungsfälle}
 \include{content/use-cases/monitoring-layer-2/monitoring-layer-2-paper}
 \include{content/use-cases/script-extending-linux/script-extending-linux-paper}
+
+\lstlistoflistings
+\addcontentsline{toc}{chapter}{Listings}
 
 \end{document}

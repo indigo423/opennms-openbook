@@ -19,6 +19,20 @@
 \usepackage{float}
 
 %
+% Package and configuration for abbreviations and markup
+%
+\usepackage{nomencl}
+  \let\abbrev\nomenclature
+  \renewcommand{\nomname}{Abkürzungsverzeichnis}
+  \setlength{\nomlabelwidth}{.25\hsize}
+  \renewcommand{\nomlabel}[1]{#1 \dotfill}
+  \setlength{\nomitemsep}{-\parsep}
+  \makenomenclature
+  
+\usepackage[normalem]{ulem}
+  \newcommand{\markup}[1]{\uline{#1}}
+
+%
 % Embedding graphic
 %
 \usepackage{graphicx}

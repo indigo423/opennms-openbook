@@ -1,10 +1,13 @@
 %=======================================================
 \section{Layer 2 - Monitoring}
 %=======================================================
-Für das Überwachen von Netzwerkverbindungen wird häufig das \textit{ICMP}\footnote{Internet Control Message Protocol zum Test der IP-Konnektivität welches mit dem Kommando \texttt{ping} verwendet wird.} Protokoll der Internetprotokollfamilie verwendet. Es genügt um festzustellen, ob ein Gerät über das Netzwerk noch erreichbar ist oder nicht. Befinden sich redundante Pfade im Netzwerk, kann eine Störung über \textit{ICMP} nicht festgestellt werden, da die \textit{ICMP-Pakete} transparent über einen redundanten Pfad geleitet werden. Die Überwachung wird mit \textit{ICMP} auf der Vermittlungs- oder Netzwerkschicht, also auf \textit{IP-Ebene} durchgeführt. In vielen Fällen werden Fehler oder Statusänderungen auf Basis von \textit{SNMP-Traps}\footnote{SNMP Traps sind Fehlermeldungen die von einer Netzwerkkomponente an einen Managementserver gesendet werden.} übermittelt. Der Status eines Netzwerkports wird beispielsweise mit einem  \textit{Link Down} oder \textit{Link Up} Trap dem Managementserver mitgeteilt.
+Für das Überwachen von Netzwerkverbindungen wird \emph{ICMP\footnote{Protokoll zum Test der IP-Konnektivität wie beispielsweise mit dem Kommando \texttt{ping}}}\abbrev{ICMP}{\markup{I}nternet \markup{C}ontrol \markup{M}essage \markup{P}rotocol} der Internetprotokollfamilie verwendet. Es genügt um festzustellen, ob ein Gerät über das Netzwerk noch erreichbar ist oder nicht. Befinden sich redundante Pfade im Netzwerk, kann eine Störung über \emph{ICMP} nicht festgestellt werden, da die \emph{ICMP-Pakete} transparent über einen redundanten Pfad geleitet werden. Die Überwachung wird mit \emph{ICMP} auf der Vermittlungs- oder Netzwerkschicht, also auf \emph{IP-Ebene\abbrev{IP}{\markup{I}nternet \markup{P}rotocol}} durchgeführt. In vielen Fällen werden Fehler oder Statusänderungen auf Basis von \emph{SNMP\abbrev{SNMP}{\markup{S}imple \markup{N}etwork \markup{M}anagement \markup{P}rotocol}-Traps}\footnote{SNMP Traps sind Fehlermeldungen die von einer Netzwerkkomponente an einen Managementserver gesendet werden.} übermittelt. Der Status eines Netzwerkports wird beispielsweise mit einem \emph{Link Down} oder \emph{Link Up} Trap dem Managementserver mitgeteilt.
 
-In vielen Fällen wird entweder ein \textit{SNMP-Trap} für alle oder keinen der  Netzwerkports gesendet. Eine granulare Konfiguration für welchen der Netzwerkports Traps gesendet werden sollen fehlt häufig.
-In dem folgenden Versuchsaufbau sollen drei wichtige Switch-Ports überwacht werden. Um festzustellen welche Ports für Monitoring relevant sind, verwenden wir eine benutzerdefinierte \textit{Port-Description}. Als Switch wird ein \textit{Cisco 3524XL} mit \textit{IOS 12.0(5)WC17} verwendet. \textit{OpenNMS} ist in der Version 1.8.1 auf einem \textit{Ubuntu Server 9.10} installiert. Es sind noch keine Geräte in \textit{OpenNMS} eingetragen und es findet noch keine Überwachung statt. Der Versuchsaufbau ist in der folgenden Abbildung dargestellt.
+\abbrev{ICMP}{\markup{I}nternet \markup{C}ontrol \markup{M}essage \markup{P}rotocol}
+
+In vielen Fällen wird entweder ein \emph{SNMP-Trap} für alle oder keinen der  Netzwerkports gesendet. Eine granulare Konfiguration für welchen der Netzwerkports Traps gesendet werden sollen fehlt häufig.
+
+In dem folgenden Versuchsaufbau sollen drei wichtige Switch-Ports überwacht werden. Um festzustellen welche Ports für Monitoring relevant sind, verwenden wir eine benutzerdefinierte \emph{Port-Description}. Als Switch wird ein \emph{Cisco 3524XL} mit \emph{IOS 12.0(5)WC17} verwendet. \emph{OpenNMS} ist in der Version 1.8.1 auf einem \emph{Ubuntu Server 9.10} installiert. Es sind noch keine Geräte in \emph{OpenNMS} eingetragen und es findet noch keine Überwachung statt. Der Versuchsaufbau ist in der folgenden Abbildung dargestellt.
 
 \begin{figure}[H]
 	\centering
@@ -13,24 +16,24 @@ In vielen Fällen wird entweder ein \textit{SNMP-Trap} für alle oder keinen der
 	\label{pic:lab}
 \end{figure}
 
-Es sollen auf einem Switch mit der Bezeichnung \textit{sw\_access\_01}, drei wichtige Ports überwacht werden. Für die Überwachung relevant ist der Link zum \textit{ISP}\footnote{Internet Service Provider stellt den Übergabepunkt zu Internetdiensten bereit.} Router sowie auch die beiden Uplinks zum redundant ausgelegten Core. Der Port mit der Workstation interessiert uns in der Überwachung nicht und soll entsprechend ignoriert werden. In dem folgendem Versuch wird gezeigt wie \textit{SNMP} auf dem Switch eingerichtet werden kann und in \textit{OpenNMS} aufgenommen wird. Es werden lediglich Leistungsdaten von relevanten Ports aufgezeichnet. Danach wird der \textit{SNMP-Interface Poller} für die entsprechenden Ports eingerichtet.
+Es sollen auf einem Switch mit der Bezeichnung \emph{sw\_access\_01}, drei wichtige Ports überwacht werden. Für die Überwachung relevant ist der Link zum \emph{ISP\abbrev{ISP}{\markup{I}nternet \markup{S}ervice \markup{P}rovider}}\footnote{Internet Service Provider stellt den Übergabepunkt zu Internetdiensten bereit.} Router sowie auch die beiden Uplinks zum redundant ausgelegten Core. Der Port mit der Workstation interessiert uns in der Überwachung nicht und soll entsprechend ignoriert werden. In dem folgendem Versuch wird gezeigt wie \emph{SNMP} auf dem Switch eingerichtet werden kann und in \emph{OpenNMS} aufgenommen wird. Es werden lediglich Leistungsdaten von relevanten Ports aufgezeichnet. Danach wird der \emph{SNMP-Interface Poller} für die entsprechenden Ports eingerichtet.
 
 %=======================================================
 \subsection{SNMP-Ready Cisco Switch}
 %=======================================================
-Bevor wir überhaupt mit der Überwachung anfangen können, muss \textit{SNMP} auf den Geräten eingerichtet werden. Die Einrichtung wird detailiert auf \url{http://www.cisco.com} unter \textit{"Configuring SNMP 3"}\footnote{Configuring SNMP – \url{http://www.cisco.com/en/US/docs/ios/12_2/configfun/configuration/guide/fcf014.html}} beschrieben. Es werden hier nur die rudimentären Schritte zur Einrichtung von \textit{SNMP} beschrieben. Die grundlegende Einrichtung von Authentifizierung, Hostnamen sowie IP-Adressen ist bereits vorgenommen. Wir melden uns per \textit{Telnet} auf unserem Switch an und aktivieren \textit{SNMP} im \textit{Read-Only} Modus und setzen eine \textit{location} und einen \textit{contact}.
+Bevor wir überhaupt mit der Überwachung anfangen können, muss \emph{SNMP} auf den Geräten eingerichtet werden. Die Einrichtung wird detailiert auf \url{http://www.cisco.com} unter \emph{"Configuring SNMP 3"}\footnote{Configuring SNMP – \url{http://www.cisco.com/en/US/docs/ios/12_2/configfun/configuration/guide/fcf014.html}} beschrieben. Es werden hier nur die rudimentären Schritte zur Einrichtung von \emph{SNMP} beschrieben. Die grundlegende Einrichtung von Authentifizierung, Hostnamen sowie IP-Adressen ist bereits vorgenommen. Wir melden uns per \emph{Telnet} auf unserem Switch an und aktivieren \emph{SNMP} im \emph{Read-Only} Modus und setzen eine \emph{location} und einen \emph{contact}.
 
 \lstinputlisting[caption={SNMP-Konfiguration auf Cisco Switch}
       \label{lst:cisco-snmp-config}]
   {configs/use-cases/monitoring-layer-2/cisco-snmp.cfg}
 
-Damit ist es nun möglich vom \textit{OpenNMS-Server} \textit{SNMP} Abfragen durchzuführen. Im Anschluss werden die entsprechenden \textit{Port-Description} gesetzt.
+Damit ist es nun möglich vom \emph{OpenNMS-Server} \emph{SNMP} Abfragen durchzuführen. Im Anschluss werden die entsprechenden \emph{Port-Description} gesetzt.
 
 \lstinputlisting[caption={Konfiguration der Netzwerk-Ports}
        \label{lst:cisco-port-config}]
   {configs/use-cases/monitoring-layer-2/cisco-ports.cfg}
 
-\textbf{\textit{Hinweis:}} Es ist häufig sinnvoll, mit Hilfe von \textit{Access Listen}, Zugriffe nur von IP-Adressen des Management-Servers zu gestatten. Schauen Sie sich hier die entsprechenden \textit{ACLS} an.
+\textbf{\emph{Hinweis:}} Es ist häufig sinnvoll, mit Hilfe von \emph{Access Listen}, Zugriffe nur von IP-Adressen des Management-Servers zu gestatten. Schauen Sie sich hier die entsprechenden \emph{ACLS} an.
 
 Um die SNMP Konfiguration zu testen, können die gesetzten Beschreibungen mit dem Kommando
 
@@ -38,9 +41,9 @@ Um die SNMP Konfiguration zu testen, können die gesetzten Beschreibungen mit de
 snmpwalk -v 2c -c notpublic 172.16.23.9 IF-MIB::ifAlias
 \end{lstlisting}
 
-vom \textit{OpenNMS-Server} abgerufen werden. Die Ausgabe sollte dann in etwa so aussehen:
+vom \emph{OpenNMS-Server} abgerufen werden. Die Ausgabe sollte dann in etwa so aussehen:
 
-\lstinputlisting[caption={\textit{SNMP walk} für die Anzeige der \textit{Port-Description}}
+\lstinputlisting[caption={\emph{SNMP walk} für die Anzeige der \emph{Port-Description}}
        \label{lst:cisco-ifalias-snmpwalk}]
   {configs/use-cases/monitoring-layer-2/cisco-ifalias-snmpwalk.txt}
 
@@ -49,13 +52,13 @@ Damit sind die Voraussetzungen für das Monitoring in OpenNMS erfüllt und wir k
 %=======================================================
 \subsection{Cisco Switch Provisioning}
 %=======================================================
-Bevor wir Geräte eintragen, sollte die verwendete \textit{SNMP-Community} bekannt sein. Hierzu gibt es zwei Möglichkeiten, entweder die \textit{default SNMP-Community} ist in der Datei
+Bevor wir Geräte eintragen, sollte die verwendete \emph{SNMP-Community} bekannt sein. Hierzu gibt es zwei Möglichkeiten, entweder die \emph{default SNMP-Community} ist in der Datei
 
 \begin{lstlisting}[numbers=none]
 $OPENNMS_HOME/etc/snmp-config.xml
 \end{lstlisting}
 
-entsprechend setzen oder die \textit{Community} wird für die einzelne IP-Adresse oder einen IP-Bereich über die Web-Oberfläche gesetzt. Um die \textit{SNMP-Community} für unseren Switch mit der IP 172.16.23.9 zu setzen, wird das Formular in der Web-Oberfläche wie folgt ausgefüllt.
+entsprechend setzen oder die \emph{Community} wird für die einzelne IP-Adresse oder einen IP-Bereich über die Web-Oberfläche gesetzt. Um die \emph{SNMP-Community} für unseren Switch mit der IP 172.16.23.9 zu setzen, wird das Formular in der Web-Oberfläche wie folgt ausgefüllt.
 
 \begin{lstlisting}[numbers=none]
 Admin --> Configure SNMP Community Names by IP
@@ -68,22 +71,22 @@ Admin --> Configure SNMP Community Names by IP
 	\label{pic:configure-snmp-by-ip}
 \end{figure}
 
-Im nächsten Schritt wird der Switch über das \textit{Provisioning} von \textit{OpenNMS} aufgenommen. Wir erzeugen eine neue \textit{Requisition Group} über 
+Im nächsten Schritt wird der Switch über das \emph{Provisioning} von \emph{OpenNMS} aufgenommen. Wir erzeugen eine neue \emph{Requisition Group} über 
 
 \begin{lstlisting}[numbers=none]
 Admin --> Manage Provisioning Groups --> Add New Group
 \end{lstlisting}
 
-mit der Bezeichnung \textit{OpenNMS Lab}. Wir erstellen eine \textit{Policy}\footnote{\textit{Policies} beschreiben Richtlinien für das Monitoring in \textit{OpenNMS} und werden während des Import in die \textit{OpenNMS-Datenbank} angewendet.} die nur Leistungsdaten von relevanten und aktiven Ports aufzeichnet. Zusätzlich soll nur \textit{ICMP} und \textit{SNMP} für den Switch überwacht werden. Die \textit{Policy} sieht dazu wie folgt aus:
+mit der Bezeichnung \emph{OpenNMS Lab}. Wir erstellen eine \emph{Policy}\footnote{\emph{Policies} beschreiben Richtlinien für das Monitoring in \emph{OpenNMS} und werden während des Import in die \emph{OpenNMS-Datenbank} angewendet.} die nur Leistungsdaten von relevanten und aktiven Ports aufzeichnet. Zusätzlich soll nur \emph{ICMP} und \emph{SNMP} für den Switch überwacht werden. Die \emph{Policy} sieht dazu wie folgt aus:
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/requisition-policy}
-	\caption{Richtlinie für den Import des \textit{Cisco} Switch}
+	\caption{Richtlinie für den Import des \emph{Cisco} Switch}
 	\label{pic:requisition-policy}
 \end{figure}
 
-Alle Detektoren ausser \textit{ICMP} und \textit{SNMP} wurden entfernt. Zusätzlich wurde eine \textit{datacollection\_policy} angelegt, die nur Leistungsdaten von Ports aufzeichnet, welche aktiv sind und\footnote{Die Verknüpfung stammt aus dem Konfigurationsschlüssel \textit{matchBehavior}, \textit{oder=ANY\_PARAMETER}, \textit{Negation=NON\_PARAMETERS}} eine Port-Beschreibung\footnote{In der \textit{SNMP MIB II} ist \textit{ifDescr} die Interface-Bezeichnung \textit{(FastEthernet 0/1)} und der \textit{ifAlias} die Port Beschreibung} mit \textit{Uplink} beginnend besitzen. Die Geräte in der \textit{Requisition Group} wird täglich\footnote{Definiert über den Standardparameter \textit{Scan Interval 1d}} einmal synchronisiert. Der Switch wird nun unter 
+Alle Detektoren ausser \emph{ICMP} und \emph{SNMP} wurden entfernt. Zusätzlich wurde eine \emph{datacollection\_policy} angelegt, die nur Leistungsdaten von Ports aufzeichnet, welche aktiv sind und\footnote{Die Verknüpfung stammt aus dem Konfigurationsschlüssel \emph{matchBehavior}, \emph{oder=ANY\_PARAMETER}, \emph{Negation=NON\_PARAMETERS}} eine Port-Beschreibung\footnote{In der \emph{SNMP MIB\abbrev{MIB}{\markup{M}anagement \markup{I}nformation \markup{B}ase} II} ist \emph{ifDescr} die Interface-Bezeichnung \emph{(FastEthernet 0/1)} und der \emph{ifAlias} die Port Beschreibung} mit \emph{Uplink} beginnend besitzen. Die Geräte in der \emph{Requisition Group} wird täglich\footnote{Definiert über den Standardparameter \emph{Scan Interval 1d}} einmal synchronisiert. Der Switch wird nun unter 
 
 \begin{lstlisting}[numbers=none]
 Requisition (Provisioning Group): EDIT --> Add Node
@@ -94,32 +97,32 @@ eingetragen und synchronisiert.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/requisition-import}
-	\caption{Import der \textit{Requisition Group} in \textit{OpenNMS}}
+	\caption{Import der \emph{Requisition Group} in \emph{OpenNMS}}
 	\label{pic:requisition-import}
 \end{figure}
 
-Die Konfiguration wird bestätigt, über die Schaltfläche \textit{Synchronize} importiert und im Monitoring bereitgestellt. Nach dem Import stellt sich der Switch in OpenNMS wie folgt dar:
+Die Konfiguration wird bestätigt, über die Schaltfläche \emph{Synchronize} importiert und im Monitoring bereitgestellt. Nach dem Import stellt sich der Switch in OpenNMS wie folgt dar:
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/node-page}
-	\caption{\textit{Node Page} des Cisco-Switch nach dem Import in \textit{OpenNMS}}
+	\caption{\emph{Node Page} des Cisco-Switch nach dem Import in \emph{OpenNMS}}
 	\label{pic:node-page}
 \end{figure}
 
-Zur besseren Darstellung wurden die Spalten mit der Interface-Geschwindigkeit und IP-Adresse ausgeblendet und der \textit{Port-Status} hinzugefügt. Die grün hinterlegten Ports sind aktiv. Die blau hinterlegten Ports sind administrativ deaktiviert. Der Switch wird nun täglich  mit den entsprechenden Port-Beschreibungen in OpenNMS synchronisiert und die entsprechenden Informationen im Monitoring bereitgestellt. Es werden zusätzlich nur Leistungsdaten von Ports mit der Beschreibung \textit{Uplink} aufgezeichnet.
+Zur besseren Darstellung wurden die Spalten mit der Interface-Geschwindigkeit und IP-Adresse ausgeblendet und der \emph{Port-Status} hinzugefügt. Die grün hinterlegten Ports sind aktiv. Die blau hinterlegten Ports sind administrativ deaktiviert. Der Switch wird nun täglich  mit den entsprechenden Port-Beschreibungen in OpenNMS synchronisiert und die entsprechenden Informationen im Monitoring bereitgestellt. Es werden zusätzlich nur Leistungsdaten von Ports mit der Beschreibung \emph{Uplink} aufgezeichnet.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/use-cases/monitoring-layer-2/uplink-datacollection}
-	\caption{Leistungsdaten werden nur von Ports mit der Beschreibung \textit{Uplink} gesammelt.}
+	\caption{Leistungsdaten werden nur von Ports mit der Beschreibung \emph{Uplink} gesammelt.}
 	\label{pic:uplink-datacollection}
 \end{figure}
 
 %=======================================================
 \subsection{Port Status kontrollieren}
 %=======================================================
-Zu Begin muss der dazu verwendete \textit{SNMP Interface Poller} aktiviert werden. In der Datei
+Zu Begin muss der dazu verwendete \emph{SNMP Interface Poller} aktiviert werden. In der Datei
 
 \begin{lstlisting}[numbers=none]
 $OPENNMS_HOME/etc/service-configuration.xml
@@ -127,7 +130,7 @@ $OPENNMS_HOME/etc/service-configuration.xml
 
 wird dazu der entsprechende Dienst auskommentiert.
 
-\lstinputlisting[language=XML, caption={Der \textit{SNMP Interface Poller} ist nach der Installation von \textit{OpenNMS} einkommentiert.}
+\lstinputlisting[language=XML, caption={Der \emph{SNMP Interface Poller} ist nach der Installation von \emph{OpenNMS} einkommentiert.}
        \label{lst:opennms-service-ifpoller}]
   {configs/use-cases/monitoring-layer-2/opennms-service-config.xml}
 
@@ -139,11 +142,11 @@ vi $OPENNMS_HOME/etc/snmp-interface-poller-configuration.xml
 
 Die package-Beschreibung wird wie folgt aufgebaut:
 
-\lstinputlisting[language=XML, caption={\textit{Polling-Package} für den \textit{SNMP-Interface Poller}}
+\lstinputlisting[language=XML, caption={\emph{Polling-Package} für den \emph{SNMP-Interface Poller}}
        \label{lst:opennms-ifpoller-package}]
   {configs/use-cases/monitoring-layer-2/snmp-interface-poller-package-config.xml}
 
-Damit nur Ports mit der Beschreibung \textit{Uplink} überwacht werden, wird ein Filterkritierum angegeben. Dieses lässt sich logisch mit weiteren Kriterien mit \textit{AND} und \textit{OR} verknüpfen. Mit \textit{snmpifalias like 'Uplink\%'} wird der entsprechende \textit{Alias} aus der Datenbank ausgelesen und überwacht. Der Port Status wird alle 5 Minuten getestet und aktualisiert. Es können als Bedingung alle Felder aus der Tabelle \textit{snmpinterface} verwendet werden. In der Version 1.8.1 sind folgende Spalten verwendbar:
+Damit nur Ports mit der Beschreibung \emph{Uplink} überwacht werden, wird ein Filterkritierum angegeben. Dieses lässt sich logisch mit weiteren Kriterien mit \emph{AND} und \emph{OR} verknüpfen. Mit \emph{snmpifalias like 'Uplink\%'} wird der entsprechende \emph{Alias} aus der Datenbank ausgelesen und überwacht. Der Port Status wird alle 5 Minuten getestet und aktualisiert. Es können als Bedingung alle Felder aus der Tabelle \emph{snmpinterface} verwendet werden. In der Version 1.8.1 sind folgende Spalten verwendbar:
 
 \pagebreak
 
@@ -170,7 +173,7 @@ Damit nur Ports mit der Beschreibung \textit{Uplink} überwacht werden, wird ein
 	\hline
   	nodeid    &    Eindeutige ID für den Knoten in OpenNMS. \\
   	\hline
-  	ipaddr    &    RFC-1213-MIB: The media-dependent physical address. Setting this object to a null string (one of zero length) has the effect of invaliding the corresponding entry in the atTable object.  That is, it effectively dissasociates the interface identified with said entry from the mapping identified with said entry.  It is an implementation-specific matter as to whether the agent removes an invalidated entry from the table. Accordingly, management stations must be prepared to receive tabular information from agents that corresponds to entries not currently in use. Proper interpretation of such entries requires examination of the relevant atPhysAddress object. \\
+  	ipaddr    &    RFC-1213-MIB\abbrev{RFC}{\markup{R}equest \markup{f}or \markup{C}omments}: The media-dependent physical address. Setting this object to a null string (one of zero length) has the effect of invaliding the corresponding entry in the atTable object.  That is, it effectively dissasociates the interface identified with said entry from the mapping identified with said entry.  It is an implementation-specific matter as to whether the agent removes an invalidated entry from the table. Accordingly, management stations must be prepared to receive tabular information from agents that corresponds to entries not currently in use. Proper interpretation of such entries requires examination of the relevant atPhysAddress object. \\
   	\hline
   	snmpipadentnetmask    &    RFC1213-MIB: The NetworkAddress (e.g., the IP address) corresponding to the media-dependent `physical' address. \\
   	\hline

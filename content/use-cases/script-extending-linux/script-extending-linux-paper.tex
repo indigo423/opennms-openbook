@@ -1,7 +1,7 @@
 %=======================================================
 \section{Monitoring mit Skripten}
 %=======================================================
-Für die Überwachung von speziellen Anwendungen oder Arbeitsabläufen, reichen bestehende standardisierte Managementagenten häufig nicht aus. Die notwendigen Statusinformationen können über Standard- oder Herstellerspezifische \emph{SNMP\footnote{SNMP ist das Simple Network Management Protocol} MIB}\footnote{Management Information Base} nicht abgefragt werden. Um hier spezielle Anforderungen erfüllen zu können ist es möglich eigene Programme oder Skripte zur Überwachung einzubinden. Um ein möglichst praxisnahes und durchgängiges Beispiel liefern zu können, konfigurieren wir exemplarisch eine Festplattenüberwachung mit \emph{S.M.A.R.T}\footnote{Self-Monitoring, Analysis and Reporting Technology}. Um die Abläufe zu verdeutlichen richten wir einen  Monitor ein, der den Zustand einer lokal installieren Festplatte überwacht.Die Verwendung der eigenen Programme und Skripte kann auf unterschiedliche Art und Weise realisiert werden. Im ersten Teil wird beschrieben, wie der unter \emph{Unix/Linux} weit verbreitete \emph{Net-SNMP} Agent erweitert und in \emph{OpenNMS} genutzt werden kann. Das Monitoring des Festplattenstatus wird in Varianten durchgeführt und soll den Ablauf und die Notwendigen Konfigurationsschritte verdeutlichen.\emph{Nagios}, als ein weit verbreitetes quelloffenes Monitoringsystem, stellt einen sehr großen Pool\footnote{Nagios Plugins unter \url{http://www.monitoringexchange.org}} von Überwachungsskripten und Programmen zur Verfügung. Diese Skripte können als \emph{Plugins} auf einem Server mit einem \emph{Nagios-Agenten}\footnote{Unter Linux/Unix \emph{NRPE} unter Windows \emph{NSClient++}} ausgeführt werden. In diesem Dokument wird beschrieben wie \emph{OpenNMS} die \emph{NRPE} Agenten in der Netzwerküberwachung nutzen kann. In \emph{OpenNMS} wird dazu ein spezieller \emph{NRPE Monitor} bereitgestellt. Er veranlasst das ausführen der \emph{Plugins} und stellt den Status entsprechend dar.Da für die Verwaltung von \emph{Unix/Linux} basierten Systemen häufig das SSH-Protokoll\footnote{Secure Shell} verwendet wird, kann auch dieses Protokoll für die Netzwerküberwachung verwendet werden. Es erlaubt neben der Bereitstellung eines entfernten Shellzugangs ebenfalls die Möglichkeit, Programme oder Skripte auf dem entfernten Server auszuführen. In \emph{OpenNMS} kann dazu der \emph{General Purpose Monitor} verwendet werden. Er erlaubt es Shellkommandos auszuführen und kann das Ergebnis des Kommandos in einem \emph{Service Status} auswerten.Das \emph{HTTP\footnote{Hyper Text Transfer Protokoll}} ist eines der wichtigsten Protokolle im Internet. Es wird neben der Auslieferung von Internetseiten auch für entfernte Funktionsaufrufe (\emph{ReST\footnote{Representational State Transfer}} oder \emph{SOAP}\footnote{Simple Object Access Protocol}) genutzt. Zusätzlich lässt sich \emph{HTTP} auch für Monitoring-Zwecke verwenden. Über \emph{HTTP} können sowohl Statusabfragen oder auch Leistungsdaten für das Monitoring bereitgestellt werden. Die Übertragung kann zudem über \emph{SSL\footnote{Secure Socket Layer}} verschlüsselt erfolgen. Zusätzlich sind Webserver nahezu auf jedem System sehr einfach einzurichten und sind im Netzwerk oft gut erreichbar. Im letzten Abschnitt wird gezeigt wie man einen \emph{Apache2-Server\footnote{Apache Project: \url{http://httpd.apache.org}}} in Verbindung mit \emph{CGI\footnote{Common Gateway Interface}} für das Monitoring in \emph{OpenNMS} einrichten kann. Der Fokus liegt hier auf dem Statusmonitoring. Auf eine \emph{HTTP-Datacollection\footnote{OpenNMS HTTP-Datacollection im OpenNMS Wiki}} zur Aufzeichnung von Leistungsdaten wird hier nicht eingegangen.
+Für die Überwachung von speziellen Anwendungen oder Arbeitsabläufen, reichen bestehende standardisierte Managementagenten häufig nicht aus. Die notwendigen Statusinformationen können über Standard- oder Herstellerspezifische \emph{SNMP MIB} nicht abgefragt werden. Um hier spezielle Anforderungen erfüllen zu können ist es möglich eigene Programme oder Skripte zur Überwachung einzubinden. Um ein möglichst praxisnahes und durchgängiges Beispiel liefern zu können, konfigurieren wir exemplarisch eine Festplattenüberwachung mit \emph{S.M.A.R.T}\abbrev{S.M.A.R.T.}{\markup{S}elf-\markup{M}onitoring, \markup{A}nalysis and \markup{R}eporting \markup{T}echnology}. Um die Abläufe zu verdeutlichen richten wir einen  Monitor ein, der den Zustand einer lokal installieren Festplatte überwacht.Die Verwendung der eigenen Programme und Skripte kann auf unterschiedliche Art und Weise realisiert werden. Im ersten Teil wird beschrieben, wie der unter \emph{Unix/Linux} weit verbreitete \emph{Net-SNMP} Agent erweitert und in \emph{OpenNMS} genutzt werden kann. Das Monitoring des Festplattenstatus wird in Varianten durchgeführt und soll den Ablauf und die Notwendigen Konfigurationsschritte verdeutlichen.\emph{Nagios}, als ein weit verbreitetes quelloffenes Monitoringsystem, stellt einen sehr großen Pool\footnote{Nagios Plugins unter \url{http://www.monitoringexchange.org}} von Überwachungsskripten und Programmen zur Verfügung. Diese Skripte können als \emph{Plugins} auf einem Server mit einem \emph{Nagios-Agenten}\footnote{Unter Linux/Unix \emph{NRPE}\abbrev{NRPE}{\markup{N}agios \markup{R}emote \markup{P}lugin \markup{E}xecutor} unter Windows \emph{NSClient++}} ausgeführt werden. In diesem Dokument wird beschrieben wie \emph{OpenNMS} die \emph{NRPE} Agenten in der Netzwerküberwachung nutzen kann. In \emph{OpenNMS} wird dazu ein spezieller \emph{NRPE Monitor} bereitgestellt. Er veranlasst das ausführen der \emph{Plugins} und stellt den Status entsprechend dar.Da für die Verwaltung von \emph{Unix/Linux} basierten Systemen häufig das SSH-Protokoll\abbrev{SSH}{\markup{S}ecure \markup{Sh}ell} verwendet wird, kann auch dieses Protokoll für die Netzwerküberwachung verwendet werden. Es erlaubt neben der Bereitstellung eines entfernten Shellzugangs ebenfalls die Möglichkeit, Programme oder Skripte auf dem entfernten Server auszuführen. In \emph{OpenNMS} kann dazu der \emph{General Purpose Monitor} verwendet werden. Er erlaubt es Shellkommandos auszuführen und kann das Ergebnis des Kommandos in einem \emph{Service Status} auswerten.Das \emph{HTTP}\abbrev{HTTP}{\markup{H}yper \markup{T}ext \markup{T}ransfer \markup{P}rotocol} ist eines der wichtigsten Protokolle im Internet. Es wird neben der Auslieferung von Internetseiten auch für entfernte Funktionsaufrufe (\emph{ReST}\abbrev{ReST}{\markup{Re}presentational \markup{S}tate \markup{T}ransfer} oder \emph{SOAP}\abbrev{SOAP}{\markup{S}imple \markup{O}bject \markup{A}ccess \markup{P}rotocol}) genutzt. Zusätzlich lässt sich \emph{HTTP} auch für Monitoring-Zwecke verwenden. Über \emph{HTTP} können sowohl Statusabfragen oder auch Leistungsdaten für das Monitoring bereitgestellt werden. Die Übertragung kann zudem über \emph{SSL}\abbrev{SSL}{\markup{S}ecure \markup{S}ocket \markup{L}ayer} verschlüsselt erfolgen. Zusätzlich sind Webserver nahezu auf jedem System sehr einfach einzurichten und sind im Netzwerk oft gut erreichbar. Im letzten Abschnitt wird gezeigt wie man einen \emph{Apache2-Server\footnote{Apache Project: \url{http://httpd.apache.org}}} in Verbindung mit \emph{CGI}\abbrev{CGI}{\markup{C}ommon \markup{G}ateway \markup{I}nterface} für das Monitoring in \emph{OpenNMS} einrichten kann. Der Fokus liegt hier auf dem Statusmonitoring. Auf eine \emph{HTTP-Datacollection\footnote{OpenNMS HTTP-Datacollection im OpenNMS Wiki}} zur Aufzeichnung von Leistungsdaten wird hier nicht eingegangen.
 
 %=======================================================
 \subsection{Einrichtung von S.M.A.R.T.}
@@ -74,7 +74,7 @@ snmpget -v 2c -c public localhost .1.3.6.1.2.1.1.1.0
 SNMPv2-MIB::sysDescr.0 = STRING: Linux marge 2.6.31-22-generic-pae \#60-Ubuntu SMP Thu May 27 01:40:15 UTC 2010 i686
 \end{lstlisting}
 
-Mit dieser Abfrage wird die Systembeschreibung per \emph{SNMP} ausgelesen und liefert auf einem Unix/Linux-System die laufende Kernelversion.Aus Sicherheitsgründen ist die Standardkonfiguration des \emph{SNMP-Agenten} sehr restriktiv konfiguriert. Der Agent lauscht nur auf der \emph{IP-Loopback} Schnittstelle und die Abfrage der kompletten MIB ist nicht gestattet. Damit eine entfernte Abfrage über das Netzwerk überhaupt möglich ist, müssen daher einige Anpassungen vorgenommen werden.Im ersten Schritt setzen wir eine andere \emph{SNMP community}. Die \emph{Standard-Community} ist auf \emph{public} gesetzt. \textbf{\textit{Hinweis:}} Es macht Sinn eine unternehmensweite einheitliche \emph{Community} festzulegen, die nicht \emph{public} für den Lese- und \emph{privat} für den Schreibzugriff ist.Zusätzlich erlauben wir den Zugriff auf den \emph{SNMP Agenten} nur der IP-Adresse des OpenNMS Servers. Die Angabe wird in \emph{CIDR\footnote{Classless Inter Domain Routing – Nach / wird die Anzahl der Bits für eine Bitmaske angegeben.}}-Schreibweise angegeben. Dazu bearbeiten wird die Konfigurationsdatei mit
+Mit dieser Abfrage wird die Systembeschreibung per \emph{SNMP} ausgelesen und liefert auf einem Unix/Linux-System die laufende Kernelversion.Aus Sicherheitsgründen ist die Standardkonfiguration des \emph{SNMP-Agenten} sehr restriktiv konfiguriert. Der Agent lauscht nur auf der \emph{IP-Loopback} Schnittstelle und die Abfrage der kompletten MIB ist nicht gestattet. Damit eine entfernte Abfrage über das Netzwerk überhaupt möglich ist, müssen daher einige Anpassungen vorgenommen werden.Im ersten Schritt setzen wir eine andere \emph{SNMP community}. Die \emph{Standard-Community} ist auf \emph{public} gesetzt. \textbf{\textit{Hinweis:}} Es macht Sinn eine unternehmensweite einheitliche \emph{Community} festzulegen, die nicht \emph{public} für den Lese- und \emph{privat} für den Schreibzugriff ist.Zusätzlich erlauben wir den Zugriff auf den \emph{SNMP Agenten} nur der IP-Adresse des OpenNMS Servers. Die Angabe wird in \emph{CIDR}\abbrev{CIDR}{\markup{C}lassless \markup{I}nter \markup{D}omain \markup{R}outing}\footnote{Nach / wird die Anzahl der Bits für eine Bitmaske angegeben}-Schreibweise angegeben. Dazu bearbeiten wird die Konfigurationsdatei mit
 
 \begin{lstlisting}[numbers=none]
 vi /etc/snmp/snmpd.conf
@@ -152,7 +152,7 @@ Damit ist sichergestellt, dass der Benutzer \emph{snmp} nur Dateien mit dem Suff
 %=======================================================
 \subsubsection{Erweiterung von Net-SNMP}
 %=======================================================
-Der Agent \emph{Net-SNMP} bietet uns selbst wiederum verschiedene Möglichkeiten an, damit ein Skript oder Programm über eine \emph{OID\footnote{Object Identifier}} angesprochen werden kann. Wir verwenden die Anweisung \emph{extend} und bearbeiten dazu die Datei \emph{snmpd.conf}.
+Der Agent \emph{Net-SNMP} bietet uns selbst wiederum verschiedene Möglichkeiten an, damit ein Skript oder Programm über eine \emph{OID}\abbrev{OID}{\markup{O}bject \markup{Id}entifier} angesprochen werden kann. Wir verwenden die Anweisung \emph{extend} und bearbeiten dazu die Datei \emph{snmpd.conf}.
 
 \begin{lstlisting}[numbers=none]vi /etc/snmpd.conf\end{lstlisting}
 um sie um die folgenden Einträge zu erweitern. Da zwei Festplatten im Server vorhanden sind, wird das Skript entsprechend mit den beiden \emph{Blockdevices} als Parameter aufgerufen.
@@ -199,7 +199,7 @@ OpenNMS hat verschiedene Möglichkeiten Monitore bereitzustellen, welcher über 
 
 \begin{lstlisting}[numbers=none]vi $OPENNMS_HOME/etc/capsd-configuration.xml
 \end{lstlisting}
-Das Protokoll wird in \emph{XML-Syntax} wie folgt angelegt:
+Das Protokoll wird in \emph{XML-Syntax}\abbrev{XML}{E\markup{x}tensible \markup{M}arkup \markup{L}anguage} wie folgt angelegt:
 
 \lstinputlisting[caption={Konfiguration von \emph{capsd} zum automatischen erkennen des Service für \emph{sda} und \emph{sdb}}
       \label{lst:smart-capsd-snmp-config}]
@@ -302,7 +302,7 @@ command[check_smart_sda]=/usr/lib/nagios/plugins/check_smart.pl -d /dev/sda - sc
 Damit das neu eingerichtete Plugin genutzt werden kann, muss der NRPE-Agent mit dem Kommando 
 
 \begin{lstlisting}[numbers=none]service nagios-nrpe-server restart
-\end{lstlisting}neu gestartet werden. Mit einem entsprechendem \emph{check\_nrpe\footnote{NRPE Nagios Remote Plugin Executor URL: \url{http://www.nagios-wiki.de/nagios/howtos/nrpe}}} Plugin kann der Dienst jetzt wie folgt getestet werden:
+\end{lstlisting}neu gestartet werden. Mit einem entsprechendem \emph{check\_nrpe\footnote{NRPE: \url{http://www.nagios-wiki.de/nagios/howtos/nrpe}}} Plugin kann der Dienst jetzt wie folgt getestet werden:
 
 \begin{lstlisting}[numbers=none]check_nrpe -H <nrpe-host> -c check_smart_sda
 \end{lstlisting}
@@ -344,7 +344,7 @@ Bei der Auswertung des Ergebnisses ist allerdings nicht die Ausgabe sondern der 
   	\hline
   	3    &    Unknown    &    Down \\
   	\hline
-  	4    &    Dependent    &    Down \\
+  	4    &    Dependent    &    Down
    \label{tbl:nrep-opennms-status}
 \end{longtable}
 
@@ -529,7 +529,7 @@ Das Skript wird anschliessend mit dem Kommando
 
 \begin{lstlisting}[numbers=none]chmod +x check_smart_health.sh
 \end{lstlisting}
-ausführbar gemacht. Die Ausführung des Skriptes testen wir in einem Browser über die URL
+ausführbar gemacht. Die Ausführung des Skriptes testen wir in einem Browser über die URL\abbrev{URL}{\markup{U}niform \markup{R}esource \markup{L}ocator}
 
 \begin{lstlisting}[numbers=none]http://<entfernter-server>/cgi-mon/check_smart_health.sh?/dev/sda
 \end{lstlisting}
@@ -563,7 +563,7 @@ Um die entsprechende Ausgabe zu testen werden zwei HTTP-Monitore für den Poller
 \end{lstlisting}
 
 \lstinputlisting[caption={Ausführen des Tests über das \emph{CGI-Skript} mit \emph{pollerd}}
-      \label{lst:lst:smart-poller-cgi-config}]
+      \label{lst:smart-poller-cgi-config}]
   {configs/use-cases/script-extending-linux/smart-poller-cgi-config.xml}
   
 Nach einem Neustart von OpenNMS mit 
@@ -574,7 +574,7 @@ Nach einem Neustart von OpenNMS mit
 
 %=======================================================
 \subsection{Fazit}
-%=======================================================Wie man sehen kann, sind die Möglichkeiten eigene Programme oder Skripte auszuführen sehr vielfältig. Die Entscheidung welche besser oder schlechter sind lässt sich pauschal nicht beantworten. Die Anforderungen an die Netzwerkinfrastruktur und entsprechende Sicherheitsrichtlinien sind sehr unterschiedlich. Aus diesem Grund werden hier eine Vor- und Nachteile der entpsrechenden Methoden beleuchtet. Die Anwendung lässt sich im Übrigena auch auf andere Netzwerk-Monitoring Anwendungen wie Nagios oder Icinga übertragen.Im folgenden werden auf verschiedene Aspekte der Sicherheit, Wartbarkeit und Skalierbarkeit eingegangen.
+%=======================================================Wie man sehen kann, sind die Möglichkeiten eigene Programme oder Skripte auszuführen sehr vielfältig. Die Entscheidung welche besser oder schlechter sind lässt sich pauschal nicht beantworten. Die Anforderungen an die Netzwerkinfrastruktur und entsprechende Sicherheitsrichtlinien sind sehr unterschiedlich. Aus diesem Grund werden hier eine Vor- und Nachteile der entpsrechenden Methoden beleuchtet. Die Anwendung lässt sich im Übrigen auch auf andere Netzwerk-Monitoring Anwendungen wie \emph{Nagios} oder \emph{Icinga} übertragen.Im folgenden werden auf verschiedene Aspekte der Sicherheit, Wartbarkeit und Skalierbarkeit eingegangen.
 
 \begin{longtable}{|p{3.5cm}|p{3.5cm}|p{3.5cm}|p{3.5cm}|}
   % Kopf auf erste Seite
@@ -594,7 +594,7 @@ Nach einem Neustart von OpenNMS mit
 	 \multicolumn{4}{|c|}{(Tabelle wird auf der nächsten Seite fortgesetzt)}
   \endfoot
   \hline
-	\caption{Hilfestellung zur Einschätzung der jeweiligen Implementierung}
+	\caption{Entscheidungshilfe für das Skript-Monitoring}
   \endlastfoot
 	\hline
   	SNMP    &    -    &    ++    &    v1, v2c, v3 ++ \\
@@ -610,6 +610,6 @@ Nach einem Neustart von OpenNMS mit
 Bei \emph{SNMP}, \emph{NRPE} und \emph{HTTP} liegen auszuführende Skripte lokal auf jedem zu überwachendem Server. Die dezentrale Ablage muss mit entsprechenden Standards für ein Roll-Out in großen Umgebungen besonders berücksichtigt werden.
 
 Bei \emph{SSH} besteht zusätzlich die Möglichkeit per \emph{scp} Skripte auf den Servern zu verteilen. Das kann ein Roll-Out erleichtern.
-\emph{SNMP} bietet die höchste Skalierbarkeit. Durch das schlanke und verbindungslose Protokoll \emph{UDP}, werden sehr wenig Ressourcen beansprucht. Auf dem \emph{OpenNMS Server} selbst können bei \emph{SNMP}, \emph{NRPE} und \emph{HTTP} die Monitor als leichtgewichtige \emph{Java-Threads} ausgeführt werden. 
-Bei \emph{SSH} und dem \emph{General Purpose Monitor} werden für jeden Test mit \emph{fork()} ein Systemprozess erzeugt, was sich mit höherem Ressourcenverbrauch auf dem \emph{OpenNMS Server} bermerkbar macht. Zusätzlich werden bei Protokollen die auf \emph{TCP} basieren, eine verbindungsorientierte und bestätigte Kommunikation verwendet, die mehr Ressourcen verwendet. Bei \emph{SSH} kommt als zusätzlicher Aufwand noch die Verschlüsselung hinzu. In Umgebungen die durch \emph{Firewalls} abgesichert sind, lassen sich jedoch häufig \emph{TCP-basierende} Protokolle einfacher einsetzen.
+\emph{SNMP} bietet die höchste Skalierbarkeit. Durch das schlanke und verbindungslose Protokoll \emph{UDP}\abbrev{UDP}{\markup{U}ser \markup{D}atagram \markup{P}rotocol}, werden sehr wenig Ressourcen beansprucht. Auf dem \emph{OpenNMS Server} selbst können bei \emph{SNMP}, \emph{NRPE} und \emph{HTTP} die Monitor als leichtgewichtige \emph{Java-Threads} ausgeführt werden. 
+Bei \emph{SSH} und dem \emph{General Purpose Monitor} werden für jeden Test mit \emph{fork()} ein Systemprozess erzeugt, was sich mit höherem Ressourcenverbrauch auf dem \emph{OpenNMS Server} bermerkbar macht. Zusätzlich werden bei Protokollen die auf \emph{TCP}\abbrev{TCP}{\markup{T}ransmission \markup{C}ontrol \markup{P}rotocol} basieren, eine verbindungsorientierte und bestätigte Kommunikation verwendet, die mehr Ressourcen verwendet. Bei \emph{SSH} kommt als zusätzlicher Aufwand noch die Verschlüsselung hinzu. In Umgebungen die durch \emph{Firewalls} abgesichert sind, lassen sich jedoch häufig \emph{TCP-basierende} Protokolle einfacher einsetzen.
 Bei \emph{SNMP} (nur Version 3) kann eine Authentifizierung und Verschlüsselung verwendet werden. Bei \emph{NRPE}, \emph{SSH} und \emph{HTTP} ist lediglich eine Authentifizierung auf IP-Ebene Möglich. Jeder der \emph{root-Zugriff} auf den \emph{OpenNMS Server} hat kann die entsprechenden Kommandos oder \emph{Plugins} auf dem entfernten Server ausführen.
