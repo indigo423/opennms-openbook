@@ -1,0 +1,26 @@
+<!-- START - Customized monitoring -->
+<service name="HTTP-SMART-Health-sda"
+         interval="300000"
+         user-defined="false"
+         status="on">
+    <parameter key="retry" value="10"/>
+    <parameter key="timeout" value="5000"/>
+    <parameter key="port" value="8880"/>
+    <parameter key="url" value="/cgi-mon/smart_health.sh?/dev/sda"/>
+    <parameter key="response-text" value="~.*PASSED.*" />
+</service>
+<service name="HTTP-SMART-Health-sdb"
+         interval="300000"
+         user-defined="false"
+         status="on">
+    <parameter key="retry" value="10"/>
+    <parameter key="timeout" value="5000"/>
+    <parameter key="port" value="8880"/>
+    <parameter key="url" value="/cgi-mon/smart_health.sh?/dev/sdb"/>
+    <parameter key="response-text" value="~.*PASSED.*" />
+</service>
+<!-- END - Customized monitoring -->
+<!-- START - Customized monitoring -->
+<monitor service="HTTP-SMART-Health-sda" class-name="org.opennms.netmgt.poller.monitors.HttpMonitor"/>
+<monitor service="HTTP-SMART-Health-sdb" class-name="org.opennms.netmgt.poller.monitors.HttpMonitor"/>
+<!-- END - Customized monitoring -->

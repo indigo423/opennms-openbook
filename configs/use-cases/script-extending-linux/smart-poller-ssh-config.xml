@@ -1,0 +1,27 @@
+<!-- START - Customized monitoring -->
+<service name="SSH-SMART-Health-sda"
+         interval="300000"
+         user-defined="false"
+         status="on">
+    <parameter key="script" value="/opt/monitoring/ssh-execute.sh check_smart_health.sh /dev/sda"/>
+    <parameter key="banner" value="OK"/>
+    <parameter key="retry" value="2"/>
+    <parameter key="timeout" value="5000"/>
+    <parameter key="port" value="161"/>
+</service>
+<service name="SSH-SMART-Health-sdb"
+         interval="300000"
+         user-defined="false"
+         status="on">
+    <parameter key="script" value="/opt/monitoring/ssh-execute.sh check_smart_health.sh /dev/sda"/>
+    <parameter key="banner" value="OK"/>
+    <parameter key="retry" value="2"/>
+    <parameter key="timeout" value="5000"/>
+    <parameter key="port" value="161"/>
+</service>
+<!-- END - Customized monitoring -->
+
+<!-- START - Customized monitoring -->
+<monitor service="SSH-SMART-Health-sda" class-name="org.opennms.netmgt.poller.monitors.GpMonitor"/>
+<monitor service="SSH-SMART-Health-sdb" class-name="org.opennms.netmgt.poller.monitors.GpMonitor"/>
+<!-- END - Customized monitoring -->

@@ -1,0 +1,21 @@
+<!-- START - Customized monitoring -->
+<protocol-plugin protocol="SSH-SMART-Health-sda"
+                 class-name="org.opennms.netmgt.capsd.plugins.GpPlugin"
+                 scan="on">
+    <property key="script" \
+     value="/opt/monitoring/ssh-execute.sh check_smart_health.sh /dev/sda" />
+    <property key="banner" value="*" />
+    <property key="timeout" value="3000" />
+    <property key="retry" value="1" />
+</protocol-plugin>
+
+<protocol-plugin protocol="SSH-SMART-Health-sdb"
+                 class-name="org.opennms.netmgt.capsd.plugins.GpPlugin"
+                 scan="on">
+    <property key="script" \
+     value="/opt/monitoring/ssh-execute.sh check_smart_health.sh /dev/sdb" />
+    <property key="banner" value="*" />
+    <property key="timeout" value="3000" />
+    <property key="retry" value="1" />
+</protocol-plugin>
+<!-- END - Customized monitoring -->

@@ -1,0 +1,34 @@
+<!-- START - Customized monitoring -->
+<service name="NRPES-SMART-Health-sda"
+         interval="300000"
+         user-defined="false"
+         status="on">
+    <parameter key="retry" value="3"/>
+    <parameter key="timeout" value="5000"/>
+    <parameter key="port" value="5666"/>
+    <parameter key="command" value="check_smart_sda"/>
+    <parameter key="padding" value="2"/>
+    <parameter key="rrd-repository" value="/opt/opennms/share/rrd/response"/>
+    <parameter key="ds-name" value="nrpe"/>
+</service>
+
+<service name="NRPES-SMART-Health-sda"
+         interval="300000"
+         user-defined="false"
+         status="on">
+    <parameter key="retry" value="3"/>
+    <parameter key="timeout" value="5000"/>
+    <parameter key="port" value="5666"/>
+    <parameter key="command" value="check_smart_sda"/>
+    <parameter key="padding" value="2"/>
+    <parameter key="rrd-repository" value="/opt/opennms/share/rrd/response"/>
+    <parameter key="ds-name" value="nrpe"/>
+</service>
+<!-- END - Customized monitoring -->
+
+<!-- START - Customized monitoring -->
+<monitor service="NRPES-SMART-Health-sda"
+         class-name="org.opennms.netmgt.poller.monitors.NrpeMonitor"/>
+<monitor service="NRPES-SMART-Health-sdb"
+         class-name="org.opennms.netmgt.poller.monitors.NrpeMonitor"/>
+<!-- END - Customized monitoring -->

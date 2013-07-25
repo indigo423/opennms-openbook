@@ -1,0 +1,21 @@
+<!-- START - Customized monitoring -->
+<protocol-plugin protocol="NRPES-SMART-Health-sda" 
+                 class-name="org.opennms.netmgt.capsd.plugins.NrpePlugin" 
+                 scan="on">
+    <property key="banner" value="*" />
+    <property key="port" value="5666" />
+    <property key="timeout" value="3000" />
+    <property key="retry" value="2" />
+    <property key="command" value="check_smart_sda" />
+</protocol-plugin>
+
+<protocol-plugin protocol="NRPES-SMART-Health-sdb"
+                 class-name="org.opennms.netmgt.capsd.plugins.NrpePlugin"
+                 scan="on">
+    <property key="banner" value="*" />
+    <property key="port" value="5666" />
+    <property key="timeout" value="3000" />
+    <property key="retry" value="2" />
+    <property key="command" value="check_smart_sdb" />
+</protocol-plugin>
+<!-- END - Customized monitoring -->

@@ -1,0 +1,19 @@
+<!-- START - Customized monitoring -->
+<protocol-plugin protocol="HTTP-SMART-Health-sda"
+                 class-name="org.opennms.netmgt.capsd.plugins.HttpPlugin"
+                 scan="on">
+    <property key="port" value="8880" />
+    <property key="url" value="/cgi-mon/smart_health.sh?/dev/sda"/>
+    <property key="timeout" value="3000" />
+    <property key="retry" value="1" />
+</protocol-plugin>
+
+<protocol-plugin protocol="HTTP-SMART-Health-sdb"
+                 class-name="org.opennms.netmgt.capsd.plugins.HttpPlugin"
+                 scan="on">
+    <property key="port" value="8880" />
+    <property key="url" value="/cgi-mon/smart_health.sh?/dev/sdb"/>
+    <property key="timeout" value="3000" />
+    <property key="retry" value="1" />
+</protocol-plugin>
+<!-- END - Customized monitoring -->
