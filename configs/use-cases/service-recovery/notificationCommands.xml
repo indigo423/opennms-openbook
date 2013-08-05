@@ -1,0 +1,11 @@
+<command binary="true">
+    <name>restart-service</name>
+    <execute>/opt/scripts/opennms/ssh-restart.sh</execute>
+    <comment>restart service</comment>
+    <argument streamed="false">
+        <switch>-interface</switch>
+    </argument>
+    <argument streamed="false">
+        <switch>-tm</switch>
+    </argument>
+</command>
