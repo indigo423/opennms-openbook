@@ -24,37 +24,108 @@
 \newpage
 
 %=======================================================
-\chapter{Provisioning System}
-\epigraphhead[70]{\epigraph{If opportunity doesn't knock, build a door.}{\textit{Milton Berle}}}
+\chapter{Konzepte des Netzwerk-Monitorings}
+%=======================================================
+\include{content/concepts-monitoring/introduction}
+\include{content/concepts-monitoring/fcaps}
+\include{content/concepts-monitoring/polling-vs-event}
+\include{content/concepts-monitoring/opennms-components}
+\include{content/concepts-monitoring/opennms-eventbus}
+\include{content/concepts-monitoring/terminology}
 
+%=======================================================
+\chapter{Netzwerk-Management Protokolle und Agenten}
+%=======================================================
+\include{content/nms-protocols/introduction}
+\include{content/nms-protocols/snmp}
+\include{content/nms-protocols/jmx}
+\include{content/nms-protocols/wmi}
+\include{content/nms-protocols/nrpe}
+\include{content/nms-protocols/nsclient}
+
+%=======================================================
+\chapter{Planung und Design der Installation}
+%=======================================================
+\include{content/install/introduction}
+\include{content/install/single-install}
+\include{content/install/distributed-install}
+\include{content/install/ha-consideration}
+\include{content/install/setup-best-practice}
+
+%=======================================================
+\chapter{Anwendungs- und Service Monitoring}
+%=======================================================
+\include{content/service-assurance/introduction}
+\include{content/service-assurance/mon-concepts}
+\include{content/service-assurance/implementations}
+
+%=======================================================
+\chapter{Aufzeichnen von Leistungsdaten}
+%=======================================================
+\include{content/datacollection/introduction}
+\include{content/datacollection/collection-concepts}
+\include{content/datacollection/intro-rrd}
+\include{content/datacollection/collection-snmp}
+\include{content/datacollection/collection-jmx}
+\include{content/datacollection/collection-wmi}
+\include{content/datacollection/collection-jdbc}
+\include{content/datacollection/collection-xml}
+\include{content/datacollection/collection-http}
+\include{content/datacollection/collection-nsclient}
+
+%=======================================================
+\chapter{Das Benachrichtigungssystem}
+%=======================================================
+\include{content/notification/introduction}
+\include{content/notification/notify-concepts}
+\include{content/notification/destination-paths}
+\include{content/notification/notification-commands}
+\include{content/design-notification/escalation}
+\include{content/design-notification/roles-and-groups}
+\include{content/notification/extending-notification-commands}
+
+%=======================================================
+\chapter{Provisioning System}
+%=======================================================
+\epigraphhead[70]{\epigraph{If opportunity doesn't knock, build a door.}{\textit{Milton Berle}}}
+\include{content/provisioning-system/introduction}
+\include{content/provisioning-system/workflow}
 \include{content/provisioning-system/provisioning-system}
 \include{content/provisioning-system/provisioning-rest-api}
-%=======================================================
 
 %=======================================================
-\chapter{Topologien und Karten}
-\epigraphhead[70]{\epigraph{The minute that you're not learning I believe you're dead.}{\textit{Jack Nicholson}}}
-
-\include{content/topology-maps/topology-maps}
+\chapter{Inventory Integration}
 %=======================================================
-
-%=======================================================
-\chapter{3rd Party-Integration}
 \epigraphhead[70]{\epigraph{The only source of knowledge is experience.}{\textit{Albert Einstein}}}
+\include{content/inventory-integration/introduction}
+\include{content/inventory-integration/dns-server}
+\include{content/inventory-integration/vmware-vcenter}
+\include{content/inventory-integration/ocs-inventory}
 
-\include{content/3rd-party/dns-server}
-\include{content/3rd-party/vmware-vcenter}
-\include{content/3rd-party/ocs-inventory}
 %=======================================================
+\chapter{Visualisierung von Topologien}
+%=======================================================
+\epigraphhead[70]{\epigraph{The minute that you're not learning I believe you're dead.}{\textit{Jack Nicholson}}}
+\include{content/topology-maps/topology-maps}
+
+%=======================================================
+\chapter{Inventory Integration}
+%=======================================================
+\epigraphhead[70]{\epigraph{The only source of knowledge is experience.}{\textit{Albert Einstein}}}
+\include{content/inventory-integration/introduction}
+\include{content/inventory-integration/dns-server}
+\include{content/inventory-integration/vmware-vcenter}
+\include{content/inventory-integration/ocs-inventory}
 
 %=======================================================
 \chapter{Anwendungsfälle}
+%=======================================================
 \epigraphhead[70]{\epigraph{And now for something completely different.}{\textit{Monty Pyton}}}
-
+\include{content/use-cases/introduction}
 \include{content/use-cases/monitoring-layer-2/monitoring-layer-2-paper}
 \include{content/use-cases/script-extending-linux/script-extending-linux-paper}
 \include{content/use-cases/service-recovery/service-recovery}
-%=======================================================
+\include{content/use-cases/service-assurance/http-monitor}
 
 \lstlistoflistings
 \addcontentsline{toc}{chapter}{Listings}

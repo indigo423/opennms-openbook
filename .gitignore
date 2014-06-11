@@ -2,3 +2,4 @@
 .texpadtmp/
 *.aux
 *.log
+*.pyg
